@@ -1,12 +1,12 @@
-package com.lsstop.netty.server;
+package com.lsstop.transport.netty.server;
 
 import com.lsstop.entity.RpcRequest;
-import com.lsstop.registry.ServiceRegistry;
+import com.lsstop.entity.RpcResponse;
+import com.lsstop.handler.InvokeMethodHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.timeout.IdleState;
 import io.netty.handler.timeout.IdleStateEvent;
-import io.netty.util.ReferenceCountUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,14 +22,15 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<RpcRequest> 
 
     public static final Logger LOGGER = LoggerFactory.getLogger(NettyServerHandler.class);
 
-    private static ServiceRegistry registry;
+    /**
+     * 方法执行器
+     */
+    private final InvokeMethodHandler handler;
 
-    public NettyServerHandler() {
+    public NettyServerHandler(InvokeMethodHandler invokeMethodHandler) {
+        handler = invokeMethodHandler;
     }
 
-    public NettyServerHandler(ServiceRegistry serviceRegistry) {
-        registry = serviceRegistry;
-    }
 
     /**
      * 保存注册的通道
@@ -38,21 +39,17 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<RpcRequest> 
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, RpcRequest msg) throws Exception {
+        if (msg.getHeartBeat() != null && msg.getHeartBeat()) {
+            LOGGER.info("接收到心跳包...");
+            return;
+        }
+        //TODO 调用服务，并且返回结果
         try {
-            if (msg.getHeartBeat() != null && msg.getHeartBeat()) {
-                LOGGER.info("接收到心跳包...");
-                return;
-            }
-            //服务注册
-            if (msg.getConnect() != null && msg.getConnect()) {
-                registry.registryService(ctx, msg.getName());
-                LOGGER.info("{}注册成功", msg.getName());
-                return;
-            }
-            //TODO 向服务提供方调用服务，并且返回结果
-        } finally {
-            //释放当前请求消息
-            ReferenceCountUtil.release(msg);
+            Object result = handler.invokeTargetMethod(msg);
+            ctx.writeAndFlush(RpcResponse.success(result, msg.getId(), msg.getSerializerType()));
+            //设置序列化号
+        } catch (Exception e) {
+            ctx.writeAndFlush(RpcResponse.fail(msg.getId(), msg.getSerializerType()));
         }
     }
 

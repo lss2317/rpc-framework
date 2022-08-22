@@ -1,9 +1,6 @@
 package com.lsstop.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 /**
  * @author lss
@@ -13,7 +10,13 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class RpcInstance {
+@EqualsAndHashCode
+public class URL {
+
+    /**
+     * 服务注册名称
+     */
+    private String serviceName;
 
     /**
      * ip地址

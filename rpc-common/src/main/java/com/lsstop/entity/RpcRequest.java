@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 import java.io.Serializable;
 
 /**
- * rpc请求信息实体
+ * rpc请求实体
  *
  * @author lss
  * @date 2022/08/17
@@ -50,28 +50,13 @@ public class RpcRequest implements Serializable {
     private Class<?>[] argsType;
 
     /**
-     * 负载均衡算法
+     * 序列化类型
      */
-    private Integer balance;
-
-    /**
-     * 是否是响应数据
-     */
-    private Boolean isResponse;
-
-    /**
-     * 响应数据
-     */
-    private Object data;
+    private int serializerType;
 
     /**
      * 是否是心跳包
      */
     private Boolean heartBeat;
-
-    /**
-     * 是否是连接
-     */
-    private Boolean connect;
 
 }

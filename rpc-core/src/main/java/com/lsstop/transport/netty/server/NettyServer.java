@@ -1,8 +1,9 @@
-package com.lsstop.netty.server;
+package com.lsstop.transport.netty.server;
 
 
-import com.lsstop.netty.codec.CommonDecoder;
-import com.lsstop.netty.codec.CommonEncoder;
+import com.lsstop.handler.InvokeMethodHandler;
+import com.lsstop.transport.netty.codec.ServerDecoder;
+import com.lsstop.transport.netty.codec.ServerEncoder;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -29,10 +30,8 @@ public class NettyServer {
             //TODO 清空注册服务
 
         }));
-
         EventLoopGroup bossGroup = new NioEventLoopGroup();
         EventLoopGroup workerGroup = new NioEventLoopGroup();
-
         try {
             ServerBootstrap bootstrap = new ServerBootstrap();
             bootstrap.group(bossGroup, workerGroup)
@@ -46,16 +45,16 @@ public class NettyServer {
                             ChannelPipeline pipeline = ch.pipeline();
                             //添加心跳检测和编码解码器
                             pipeline.addLast(new IdleStateHandler(10, 0, 0, TimeUnit.SECONDS));
-                            pipeline.addLast(new CommonEncoder());
-                            pipeline.addLast(new CommonDecoder());
+                            pipeline.addLast(new ServerDecoder());
+                            pipeline.addLast(new ServerEncoder());
                             //添加自定义handler
-                            pipeline.addLast(new NettyServerHandler());
+                            pipeline.addLast(new NettyServerHandler(new InvokeMethodHandler()));
                         }
                     });
             ChannelFuture channelFuture = bootstrap.bind(host, port).sync();
             LOGGER.info("rpc服务启动成功...");
             channelFuture.channel().closeFuture().sync();
-        } catch (Exception e) {
+        } catch (InterruptedException e) {
             LOGGER.info("rpc服务启动错误:{}", e.getMessage());
         } finally {
             bossGroup.shutdownGracefully();

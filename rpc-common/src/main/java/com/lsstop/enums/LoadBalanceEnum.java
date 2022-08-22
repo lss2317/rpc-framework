@@ -12,7 +12,7 @@ import lombok.Getter;
 public enum LoadBalanceEnum {
 
     /**
-     * 沦陷
+     * 轮陷
      */
     POLLING(0),
 

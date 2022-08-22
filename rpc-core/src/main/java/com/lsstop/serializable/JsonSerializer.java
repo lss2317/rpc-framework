@@ -10,6 +10,8 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 
 /**
+ * JACKSON序列化
+ *
  * @author lss
  * @date 2022/08/18
  */
@@ -36,10 +38,19 @@ public class JsonSerializer implements CommonSerializer {
         Object readValue = null;
         try {
             readValue = objectMapper.readValue(bytes, clazz);
+            if (readValue instanceof RpcRequest){
+                return handleRequest(readValue);
+            }
+            return readValue;
         } catch (IOException e) {
             LOGGER.info("反序列化异常");
         }
         return readValue;
+    }
+
+    @Override
+    public int getSerializeCode() {
+        return 1;
     }
 
     /**
