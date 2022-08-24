@@ -15,4 +15,6 @@ public interface RegistryCenter {
      * @param url         服务信息
      */
     void registered(String serviceName, URL url);
+
+    URL getURL(String serviceName);
 }

@@ -2,7 +2,10 @@ package com.lsstop.proxy;
 
 import com.lsstop.entity.RpcRequest;
 import com.lsstop.entity.RpcResponse;
+import com.lsstop.enums.RpcErrorEnum;
+import com.lsstop.exception.RpcException;
 import com.lsstop.provider.RegisterNameProvider;
+import com.lsstop.transport.netty.client.NettyClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,28 +22,36 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author lss
  * @date 2022/08/18
  */
-public class ClientProxy implements InvocationHandler {
+public class RpcClientProxy implements InvocationHandler {
 
-    public static final Logger LOGGER = LoggerFactory.getLogger(ClientProxy.class);
+    public static final Logger LOGGER = LoggerFactory.getLogger(RpcClientProxy.class);
 
     /**
      * 请求缓存
      */
     public static final ConcurrentHashMap<String, CompletableFuture<RpcResponse>> REQUEST_CACHE = new ConcurrentHashMap<>();
 
+    private final NettyClient client;
 
+    public RpcClientProxy(NettyClient client) {
+        this.client = client;
+    }
+
+    @SuppressWarnings("unchecked")
     public <T> T getProxy(Class<T> clazz) {
         return (T) Proxy.newProxyInstance(clazz.getClassLoader(), new Class[]{clazz}, this);
     }
 
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-        //向注册中心调用rpc服务
         LOGGER.info("调用方法: {}#{}", method.getDeclaringClass().getName(), method.getName());
+        //获取服务名称
         String serviceName = RegisterNameProvider.getServiceName(method.getDeclaringClass().getName());
         if (serviceName == null) {
-            throw new NullPointerException();
+            throw new NullPointerException("没有此服务");
         }
+        //TODO 向注册中心获取提供服务方地址
+
         RpcRequest request = RpcRequest.builder()
                 .id(UUID.randomUUID().toString().replace("-", ""))
                 .name(serviceName)
@@ -51,9 +62,12 @@ public class ClientProxy implements InvocationHandler {
         RpcResponse response = null;
         try {
             //远程调用请求
-        }catch (Exception e){
-
+            CompletableFuture<RpcResponse> future = client.remoteService(request);
+            response = future.get();
+        } catch (Exception e) {
+            LOGGER.error("方法调用请求发送失败:{}", e.getMessage());
+            throw new RpcException(RpcErrorEnum.TRANSFER_SERVICE_FAIL);
         }
-        return request;
+        return response.getData();
     }
 }

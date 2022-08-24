@@ -14,4 +14,9 @@ public class RedisRegistry implements RegistryCenter {
     public void registered(String serviceName, URL url) {
 
     }
+
+    @Override
+    public URL getURL(String serviceName) {
+        return null;
+    }
 }

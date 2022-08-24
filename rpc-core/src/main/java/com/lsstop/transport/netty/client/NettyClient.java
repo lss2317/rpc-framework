@@ -3,7 +3,10 @@ package com.lsstop.transport.netty.client;
 import com.lsstop.entity.RpcRequest;
 import com.lsstop.entity.RpcResponse;
 import com.lsstop.entity.URL;
-import com.lsstop.proxy.ClientProxy;
+import com.lsstop.enums.RpcErrorEnum;
+import com.lsstop.exception.RpcException;
+import com.lsstop.proxy.RpcClientProxy;
+import com.lsstop.registry.RegistryCenter;
 import com.lsstop.serializable.CommonSerializer;
 import com.lsstop.transport.netty.codec.ClientDecoder;
 import com.lsstop.transport.netty.codec.ClientEncoder;
@@ -34,10 +37,19 @@ public class NettyClient {
     private static final ConcurrentHashMap<URL, Channel> channelCollect = new ConcurrentHashMap<>();
 
     /**
+     * 注册中心
+     */
+    private final RegistryCenter registryCenter;
+
+    /**
      * 序列化
      */
-    private static Integer serializerType;
+    private final CommonSerializer serializer;
 
+    public NettyClient(RegistryCenter registryCenter, CommonSerializer serializer) {
+        this.registryCenter = registryCenter;
+        this.serializer = serializer;
+    }
 
     public static Bootstrap initBootstrap() {
         EventLoopGroup group = new NioEventLoopGroup();
@@ -105,13 +117,49 @@ public class NettyClient {
      */
     public static CompletableFuture<RpcResponse> sendRequest(RpcRequest request) {
 
-        CompletableFuture<RpcResponse> future = new CompletableFuture<>();
-        //缓存请求
-        ClientProxy.REQUEST_CACHE.put(request.getId(), future);
-        //向注册中心获取服务提供方URL
 
         //获取通道，发送远程调用
         return null;
+    }
+
+    /**
+     * 远程服务调用
+     *
+     * @param request 请求信息
+     * @return 响应线程
+     */
+    public CompletableFuture<RpcResponse> remoteService(RpcRequest request) {
+        if (serializer == null) {
+            LOGGER.info("未设置序列化器");
+            throw new RpcException(RpcErrorEnum.SERIALIZER_NOT_FOUND);
+        }
+        //向注册中心获取服务提供方URL
+        URL url = registryCenter.getURL(request.getName());
+        if (url == null) {
+            throw new NullPointerException("无此服务");
+        }
+        Channel channel = getChannel(url, serializer);
+        if (channel == null || !channel.isActive()) {
+            throw new RpcException(RpcErrorEnum.SERVICE_TRANSFER_ERROR);
+        }
+        CompletableFuture<RpcResponse> future = new CompletableFuture<>();
+        //缓存请求
+        RpcClientProxy.REQUEST_CACHE.put(request.getId(), future);
+        try {
+            channel.writeAndFlush(request).addListener((ChannelFutureListener) future1 -> {
+                if (future1.isSuccess()) {
+                    LOGGER.info("客户端调用服务：{},参数：{}", request.getName(), request);
+                } else {
+                    future.completeExceptionally(future1.cause());
+                    future1.channel().close();
+                }
+            });
+        } catch (Exception e) {
+            //清除缓存
+            RpcClientProxy.REQUEST_CACHE.remove(request.getId());
+            Thread.currentThread().interrupt();
+        }
+        return future;
     }
 
 }
