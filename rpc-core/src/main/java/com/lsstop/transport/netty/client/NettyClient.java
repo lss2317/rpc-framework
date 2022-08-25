@@ -110,19 +110,6 @@ public class NettyClient {
     }
 
     /**
-     * 远程请求调用
-     *
-     * @param request 请求参数
-     * @return 响应数据
-     */
-    public static CompletableFuture<RpcResponse> sendRequest(RpcRequest request) {
-
-
-        //获取通道，发送远程调用
-        return null;
-    }
-
-    /**
      * 远程服务调用
      *
      * @param request 请求信息

@@ -1,6 +1,6 @@
 package com.lsstop.loadbalancer;
 
-import io.netty.channel.ChannelHandlerContext;
+import com.lsstop.entity.URL;
 
 import java.util.List;
 
@@ -15,9 +15,8 @@ public interface LoadBalance {
     /**
      * 选择器
      *
-     * @param serviceName 服务名称
-     * @param list        通道集合
-     * @return 全局通道
+     * @param list url集合
+     * @return 服务url信息
      */
-    ChannelHandlerContext select(String serviceName, List<ChannelHandlerContext> list);
+    URL select(List<URL> list);
 }

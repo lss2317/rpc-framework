@@ -50,8 +50,6 @@ public class RpcClientProxy implements InvocationHandler {
         if (serviceName == null) {
             throw new NullPointerException("没有此服务");
         }
-        //TODO 向注册中心获取提供服务方地址
-
         RpcRequest request = RpcRequest.builder()
                 .id(UUID.randomUUID().toString().replace("-", ""))
                 .name(serviceName)
