@@ -1,5 +1,6 @@
 package com.lsstop.handler;
 
+import com.lsstop.HelloImpl;
 import com.lsstop.entity.RpcRequest;
 import com.lsstop.enums.ResponseEnum;
 import com.lsstop.exception.RpcException;
@@ -37,6 +38,7 @@ public class InvokeMethodHandler {
             result = method.invoke(service, request.getArgs());
             LOGGER.info("服务{} 成功调用方法{}", request.getInterfaceName(), request.getMethod());
         } catch (Exception e) {
+            LOGGER.error("方法调用错误");
             throw new RpcException(ResponseEnum.METHOD_NOT_FOUND);
         }
         return result;

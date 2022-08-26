@@ -19,8 +19,10 @@ import io.netty.handler.timeout.IdleStateHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.net.InetSocketAddress;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -34,7 +36,7 @@ public class NettyClient {
     /**
      * 储存与服务端的通道
      */
-    private static final ConcurrentHashMap<URL, Channel> channelCollect = new ConcurrentHashMap<>();
+    private static final ConcurrentHashMap<String, Channel> channelCollect = new ConcurrentHashMap<>();
 
     /**
      * 注册中心
@@ -53,8 +55,7 @@ public class NettyClient {
 
     public static Bootstrap initBootstrap() {
         EventLoopGroup group = new NioEventLoopGroup();
-        Bootstrap bootstrap = null;
-        bootstrap = new Bootstrap();
+        Bootstrap bootstrap = new Bootstrap();
         bootstrap.group(group)
                 .channel(NioSocketChannel.class)
                 //连接的超时时间，超过这个时间还是建立不上的话则代表连接失败
@@ -73,12 +74,12 @@ public class NettyClient {
      * @return 通道
      */
     public static Channel getChannel(URL url, CommonSerializer serializer) {
-        if (channelCollect.containsKey(url)) {
-            Channel channel = channelCollect.get(url);
+        if (channelCollect.containsKey(url.toString())) {
+            Channel channel = channelCollect.get(url.toString());
             if (channel != null && channel.isActive()) {
                 return channel;
             } else {
-                channelCollect.remove(url);
+                channelCollect.remove(url.toString());
             }
         }
         //连接通道
@@ -100,12 +101,11 @@ public class NettyClient {
         });
         Channel channel = null;
         try {
-            ChannelFuture connect = bootstrap.connect(url.getHost(), url.getPort());
-            channel = connect.channel();
+            channel = connect(bootstrap, new InetSocketAddress(url.getHost(), url.getPort()));
         } catch (Exception e) {
             return null;
         }
-        channelCollect.put(url, channel);
+        channelCollect.put(url.toString(), channel);
         return channel;
     }
 
@@ -147,6 +147,22 @@ public class NettyClient {
             Thread.currentThread().interrupt();
         }
         return future;
+    }
+
+    /*
+     *因为netty是异步，所以用CompletableFuture，不然会not isActive
+     */
+    private static Channel connect(Bootstrap bootstrap, InetSocketAddress inetSocketAddress) throws ExecutionException, InterruptedException {
+        CompletableFuture<Channel> completableFuture = new CompletableFuture<>();
+        bootstrap.connect(inetSocketAddress).addListener((ChannelFutureListener) future -> {
+            if (future.isSuccess()) {
+                LOGGER.info("客户端连接成功!");
+                completableFuture.complete(future.channel());
+            } else {
+                throw new IllegalStateException();
+            }
+        });
+        return completableFuture.get();
     }
 
 }

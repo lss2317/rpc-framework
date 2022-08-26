@@ -20,12 +20,17 @@ public class RedisUtil {
     /**
      * 默认ip
      */
-    public static final String DEFAULT_HOST = "localhost";
+    public static String DEFAULT_HOST = "localhost";
 
     /**
      * 默认端口
      */
-    public static final int DEFAULT_PORT = 6379;
+    public static int DEFAULT_PORT = 6379;
+
+    /**
+     * redis密码
+     */
+    public static String PASSWORD = null;
 
 
     private static Jedis jedis;
@@ -43,7 +48,12 @@ public class RedisUtil {
 
     private static Jedis getJedis() {
         //获取配置文件redis设置
-        return new Jedis(DEFAULT_HOST, DEFAULT_PORT);
+        // return new Jedis(DEFAULT_HOST, DEFAULT_PORT);
+        Jedis jedis = new Jedis(DEFAULT_HOST, DEFAULT_PORT);
+        if (PASSWORD != null) {
+            jedis.auth(PASSWORD);
+        }
+        return jedis;
     }
 
     /**
@@ -82,5 +92,15 @@ public class RedisUtil {
             return null;
         }
         return JSONArray.parseArray(json, URL.class);
+    }
+
+    public void setRedis(String host, int port) {
+        setRedis(host, port, null);
+    }
+
+    public void setRedis(String host, int port, String password) {
+        DEFAULT_HOST = host;
+        DEFAULT_PORT = port;
+        PASSWORD = password;
     }
 }

@@ -10,10 +10,6 @@ import io.netty.handler.timeout.IdleStateEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArrayList;
-
 /**
  * @author lss
  * @date 2022/08/17
@@ -30,12 +26,6 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<RpcRequest> 
     public NettyServerHandler(InvokeMethodHandler invokeMethodHandler) {
         handler = invokeMethodHandler;
     }
-
-
-    /**
-     * 保存注册的通道
-     */
-    private static final Map<String, CopyOnWriteArrayList<ChannelHandlerContext>> channelMap = new ConcurrentHashMap<>();
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, RpcRequest msg) throws Exception {

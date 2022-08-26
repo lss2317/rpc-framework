@@ -49,7 +49,7 @@ public class ServerDecoder extends ByteToMessageDecoder {
         int length = in.readInt();
         byte[] bytes = new byte[length];
         in.readBytes(bytes);
-        RpcResponse o = (RpcResponse) commonSerializer.deserialize(bytes, RpcRequest.class);
+        RpcRequest o = (RpcRequest) commonSerializer.deserialize(bytes, RpcRequest.class);
         o.setSerializerType(serializerType);
         out.add(o);
     }

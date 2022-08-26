@@ -48,7 +48,7 @@ public class ClientDecoder extends ByteToMessageDecoder {
         int length = in.readInt();
         byte[] bytes = new byte[length];
         in.readBytes(bytes);
-        Object deserialize = commonSerializer.deserialize(bytes, RpcResponse.class);
+        RpcResponse deserialize = (RpcResponse) commonSerializer.deserialize(bytes, RpcResponse.class);
         out.add(deserialize);
     }
 }

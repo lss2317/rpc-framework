@@ -34,6 +34,5 @@ public class ClientEncoder extends MessageToByteEncoder<RpcRequest> {
         out.writeInt(serializer.getSerializeCode());
         out.writeInt(serialize.length);
         out.writeBytes(serialize);
-
     }
 }

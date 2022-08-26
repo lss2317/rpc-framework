@@ -44,7 +44,7 @@ public class NettyServer {
                         protected void initChannel(SocketChannel ch) throws Exception {
                             ChannelPipeline pipeline = ch.pipeline();
                             //添加心跳检测和编码解码器
-                            pipeline.addLast(new IdleStateHandler(10, 0, 0, TimeUnit.SECONDS));
+                            pipeline.addLast(new IdleStateHandler(30, 0, 0, TimeUnit.SECONDS));
                             pipeline.addLast(new ServerDecoder());
                             pipeline.addLast(new ServerEncoder());
                             //添加自定义handler
