@@ -50,7 +50,7 @@ public class JsonSerializer implements CommonSerializer {
 
     @Override
     public int getSerializeCode() {
-        return 1;
+        return 1 << 1;
     }
 
     /**

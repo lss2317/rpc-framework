@@ -8,6 +8,7 @@ import redis.clients.jedis.Jedis;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author lss
@@ -48,7 +49,6 @@ public class RedisUtil {
 
     private static Jedis getJedis() {
         //获取配置文件redis设置
-        // return new Jedis(DEFAULT_HOST, DEFAULT_PORT);
         Jedis jedis = new Jedis(DEFAULT_HOST, DEFAULT_PORT);
         if (PASSWORD != null) {
             jedis.auth(PASSWORD);
@@ -80,7 +80,7 @@ public class RedisUtil {
 
 
     /**
-     * 获取url集合
+     * 获取健康url集合
      *
      * @param serviceName 服务名称
      * @return list
@@ -91,7 +91,23 @@ public class RedisUtil {
         if (json == null) {
             return null;
         }
-        return JSONArray.parseArray(json, URL.class);
+        return JSONArray.parseArray(json, URL.class).stream().filter(URL::isHealthy).collect(Collectors.toList());
+    }
+
+    /**
+     * 服务下线
+     * 将服务设置非健康
+     */
+    public static void offlineURL(String serviceName, URL url) {
+        List<URL> urlList = getURLList(serviceName);
+        if (urlList != null) {
+            boolean remove = urlList.remove(url);
+            if (remove) {
+                url.setHealthy(false);
+                urlList.add(url);
+                jedis.set(serviceName, JSONArray.toJSONString(urlList));
+            }
+        }
     }
 
     public void setRedis(String host, int port) {

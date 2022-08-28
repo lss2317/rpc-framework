@@ -1,6 +1,5 @@
 package com.lsstop.handler;
 
-import com.lsstop.HelloImpl;
 import com.lsstop.entity.RpcRequest;
 import com.lsstop.enums.ResponseEnum;
 import com.lsstop.exception.RpcException;

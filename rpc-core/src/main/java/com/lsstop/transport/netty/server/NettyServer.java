@@ -9,11 +9,8 @@ import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
-import io.netty.handler.timeout.IdleStateHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.concurrent.TimeUnit;
 
 /**
  * @author lss
@@ -25,11 +22,6 @@ public class NettyServer {
 
 
     public void start(String host, int port) {
-        //JVM关闭前，清空注册服务
-        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            //TODO 清空注册服务
-
-        }));
         EventLoopGroup bossGroup = new NioEventLoopGroup();
         EventLoopGroup workerGroup = new NioEventLoopGroup();
         try {
@@ -43,12 +35,10 @@ public class NettyServer {
                         @Override
                         protected void initChannel(SocketChannel ch) throws Exception {
                             ChannelPipeline pipeline = ch.pipeline();
-                            //添加心跳检测和编码解码器
-                            pipeline.addLast(new IdleStateHandler(30, 0, 0, TimeUnit.SECONDS));
-                            pipeline.addLast(new ServerDecoder());
-                            pipeline.addLast(new ServerEncoder());
+                            pipeline.addLast("decoder", new ServerDecoder());
+                            pipeline.addLast("encoder", new ServerEncoder());
                             //添加自定义handler
-                            pipeline.addLast(new NettyServerHandler(new InvokeMethodHandler()));
+                            pipeline.addLast("handler", new NettyServerHandler(new InvokeMethodHandler()));
                         }
                     });
             ChannelFuture channelFuture = bootstrap.bind(host, port).sync();

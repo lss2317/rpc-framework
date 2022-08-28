@@ -6,6 +6,7 @@ import com.lsstop.entity.URL;
 import com.lsstop.enums.RpcErrorEnum;
 import com.lsstop.exception.RpcException;
 import com.lsstop.proxy.RpcClientProxy;
+import com.lsstop.registry.Redis.RedisRegistry;
 import com.lsstop.registry.RegistryCenter;
 import com.lsstop.serializable.CommonSerializer;
 import com.lsstop.transport.netty.codec.ClientDecoder;
@@ -15,7 +16,6 @@ import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
-import io.netty.handler.timeout.IdleStateHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,7 +23,6 @@ import java.net.InetSocketAddress;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
 
 /**
  * @author lss
@@ -91,12 +90,10 @@ public class NettyClient {
                 //添加编码解码器
                 ClientEncoder commonEncoder = new ClientEncoder();
                 commonEncoder.setSerializer(serializer);
-                pipeline.addLast(commonEncoder);
-                pipeline.addLast(new ClientDecoder());
-                //添加心跳处理器
-                pipeline.addLast(new IdleStateHandler(0, 10, 0, TimeUnit.SECONDS));
+                pipeline.addLast("encoder", commonEncoder);
+                pipeline.addLast("decoder", new ClientDecoder());
                 //自定义处理器
-                pipeline.addLast(new NettyClientHandler());
+                pipeline.addLast("handler", new NettyClientHandler());
             }
         });
         Channel channel = null;
@@ -127,7 +124,11 @@ public class NettyClient {
         }
         Channel channel = getChannel(url, serializer);
         if (channel == null || !channel.isActive()) {
-            throw new RpcException(RpcErrorEnum.SERVICE_TRANSFER_ERROR);
+            //连接异常，服务下线（redis注册中心）
+            if (registryCenter instanceof RedisRegistry) {
+                registryCenter.delURL(request.getName(), url);
+            }
+            throw new RpcException(RpcErrorEnum.CLIENT_CONNECT_SERVER_FAILURE);
         }
         CompletableFuture<RpcResponse> future = new CompletableFuture<>();
         //缓存请求
@@ -159,7 +160,7 @@ public class NettyClient {
                 LOGGER.info("客户端连接成功!");
                 completableFuture.complete(future.channel());
             } else {
-                throw new IllegalStateException();
+                completableFuture.completeExceptionally(new RpcException(""));
             }
         });
         return completableFuture.get();

@@ -11,7 +11,8 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum SerializerEnum {
 
-    JACKSON(1);
+    FASTJSON(1),
+    JACKSON(2);
 
     private final int type;
 }

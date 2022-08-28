@@ -8,17 +8,17 @@ package com.lsstop.serializable;
  */
 public interface CommonSerializer {
 
-    Integer JACKSON_SERIALIZER = 1;
-    Integer KRYO_SERIALIZER = 1 << 1;
-    Integer DEFAULT_SERIALIZER = JACKSON_SERIALIZER;
+    Integer FASTJSON_SERIALIZER = 1;
+    Integer JACKSON_SERIALIZER = 1 << 1;
+    Integer DEFAULT_SERIALIZER = FASTJSON_SERIALIZER;
 
 
     static CommonSerializer getSerializerByCode(int code) {
         switch (code) {
             case 1:
+                return new FastJsonSerializer();
+            case 1 << 1:
                 return new JsonSerializer();
-            case 2:
-                return null;
             default:
                 return null;
         }

@@ -16,5 +16,19 @@ public interface RegistryCenter {
      */
     void registered(String serviceName, URL url);
 
+    /**
+     * 获取服务
+     *
+     * @param serviceName 注册服务名称
+     * @return url
+     */
     URL getURL(String serviceName);
+
+    /**
+     * 服务下线
+     *
+     * @param serviceName 服务名称
+     * @param url         服务信息
+     */
+    void delURL(String serviceName, URL url);
 }

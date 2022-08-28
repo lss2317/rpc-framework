@@ -11,7 +11,14 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum RequestType {
 
+    /**
+     * 请求
+     */
     REQUEST(0),
+
+    /**
+     * 响应
+     */
     RESPONSE(1);
 
     private final int type;
