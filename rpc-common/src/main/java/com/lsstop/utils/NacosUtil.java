@@ -21,11 +21,14 @@ public class NacosUtil {
 
     public static final Logger LOGGER = LoggerFactory.getLogger(NacosUtil.class);
 
+    /**
+     * nacos启动地址
+     */
     private static String serverAddress;
 
     private static NamingService service;
 
-    public static void setServerAddress(String serverAddress) {
+    public static void setNacos(String serverAddress) {
         NacosUtil.serverAddress = serverAddress;
     }
 
@@ -78,7 +81,7 @@ public class NacosUtil {
         try {
             return NamingFactory.createNamingService(serverAddress);
         } catch (NacosException e) {
-            LOGGER.error("nacos连接异常: {}", e.getMessage());
+            LOGGER.error("连接注册中心失败：{}", serverAddress);
             throw new RpcException(RpcErrorEnum.FAILED_TO_CONNECT_TO_SERVICE_REGISTRY);
         }
     }

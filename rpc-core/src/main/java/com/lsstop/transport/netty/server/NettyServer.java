@@ -42,7 +42,7 @@ public class NettyServer {
                         }
                     });
             ChannelFuture channelFuture = bootstrap.bind(host, port).sync();
-            LOGGER.info("rpc服务启动成功...");
+            LOGGER.info("rpc服务启动成功: {}:{}", host, port);
             channelFuture.channel().closeFuture().sync();
         } catch (InterruptedException e) {
             LOGGER.info("rpc服务启动错误:{}", e.getMessage());

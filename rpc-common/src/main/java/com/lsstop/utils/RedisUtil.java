@@ -2,6 +2,8 @@ package com.lsstop.utils;
 
 import com.alibaba.fastjson.JSONArray;
 import com.lsstop.entity.URL;
+import com.lsstop.enums.RpcErrorEnum;
+import com.lsstop.exception.RpcException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import redis.clients.jedis.Jedis;
@@ -21,17 +23,17 @@ public class RedisUtil {
     /**
      * 默认ip
      */
-    public static String DEFAULT_HOST = "localhost";
+    private static String DEFAULT_HOST = "localhost";
 
     /**
      * 默认端口
      */
-    public static int DEFAULT_PORT = 6379;
+    private static int DEFAULT_PORT = 6379;
 
     /**
      * redis密码
      */
-    public static String PASSWORD = null;
+    private static String PASSWORD = null;
 
 
     private static Jedis jedis;
@@ -48,12 +50,17 @@ public class RedisUtil {
     }
 
     private static Jedis getJedis() {
-        //获取配置文件redis设置
-        Jedis jedis = new Jedis(DEFAULT_HOST, DEFAULT_PORT);
-        if (PASSWORD != null) {
-            jedis.auth(PASSWORD);
+        try {
+            //获取配置文件redis设置
+            Jedis jedis = new Jedis(DEFAULT_HOST, DEFAULT_PORT);
+            if (PASSWORD != null) {
+                jedis.auth(PASSWORD);
+            }
+            return jedis;
+        } catch (Exception e) {
+            LOGGER.error("连接注册中心失败：{}:{}", DEFAULT_HOST, DEFAULT_PORT);
+            throw new RpcException(RpcErrorEnum.FAILED_TO_CONNECT_TO_SERVICE_REGISTRY);
         }
-        return jedis;
     }
 
     /**
@@ -67,6 +74,7 @@ public class RedisUtil {
         String urlList = jedis.get(serviceName);
         if (urlList == null) {
             List<URL> list = new ArrayList<>();
+            //TODO 剔除不健康服务
             list.add(url);
             String json = JSONArray.toJSONString(list);
             jedis.set(serviceName, json);

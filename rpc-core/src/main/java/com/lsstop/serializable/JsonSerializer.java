@@ -27,7 +27,7 @@ public class JsonSerializer implements CommonSerializer {
         try {
             bytes = objectMapper.writeValueAsBytes(obj);
         } catch (JsonProcessingException e) {
-            LOGGER.info("序列化异常");
+            LOGGER.info("序列化异常:{}", e.getMessage());
             throw new SerializeException("序列化异常");
         }
         return bytes;
@@ -35,22 +35,21 @@ public class JsonSerializer implements CommonSerializer {
 
     @Override
     public Object deserialize(byte[] bytes, Class<?> clazz) {
-        Object readValue = null;
         try {
-            readValue = objectMapper.readValue(bytes, clazz);
-            if (readValue instanceof RpcRequest){
+            Object readValue = objectMapper.readValue(bytes, clazz);
+            if (readValue instanceof RpcRequest) {
                 return handleRequest(readValue);
             }
             return readValue;
         } catch (IOException e) {
-            LOGGER.info("反序列化异常");
+            LOGGER.info("反序列化异常:{}", e.getMessage());
+            throw new SerializeException("反序列化异常");
         }
-        return readValue;
     }
 
     @Override
     public int getSerializeCode() {
-        return 1 << 1;
+        return JACKSON_SERIALIZER;
     }
 
     /**
