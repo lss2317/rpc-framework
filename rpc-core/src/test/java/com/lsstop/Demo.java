@@ -4,6 +4,7 @@ import com.alibaba.nacos.api.exception.NacosException;
 import com.alibaba.nacos.api.naming.NamingFactory;
 import com.alibaba.nacos.api.naming.NamingService;
 import com.lsstop.entity.URL;
+import com.lsstop.loadbalancer.PollingBalance;
 import com.lsstop.transport.netty.server.NettyServer;
 import com.lsstop.utils.ConsulUtil;
 import com.orbitz.consul.AgentClient;
@@ -18,6 +19,7 @@ import com.orbitz.consul.model.health.Service;
 import com.orbitz.consul.model.health.ServiceHealth;
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -89,17 +91,15 @@ public class Demo {
 
     @Test
     public void demo5() throws Exception {
-        Consul consul = Consul.builder().build();
-        HealthClient healthClient = consul.healthClient();
-        while (true) {
-            ConsulResponse<List<ServiceHealth>> tcp = healthClient.getHealthyServiceInstances("tcp");
-            List<ServiceHealth> response = tcp.getResponse();
-            List<URL> collect = response.stream().map(r -> {
-                Service service = r.getService();
-                return new URL(service.getService(), service.getAddress(), service.getPort(), service.getWeights().get().getPassing(), true);
-            }).collect(Collectors.toList());
-            System.out.println(collect);
-            Thread.sleep(10000);
+      List<URL> list = new ArrayList<>();
+      list.add(new URL("1","1",1,1));
+      list.add(new URL("2","2",2,2));
+      list.add(new URL("3","3",3,3));
+      list.add(new URL("4","4",4,4));
+        PollingBalance balance = new PollingBalance();
+        for (int i = 0; i < 20; i++) {
+            URL select = balance.select(list);
+            System.out.println(select);
         }
     }
 

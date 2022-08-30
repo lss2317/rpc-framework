@@ -13,9 +13,10 @@ import java.util.Random;
  */
 public class RandomBalance implements LoadBalance {
 
+    static Random random = new Random();
+
     @Override
     public URL select(List<URL> list) {
-        Random random = new Random();
         return list.get(random.nextInt(list.size()));
     }
 }

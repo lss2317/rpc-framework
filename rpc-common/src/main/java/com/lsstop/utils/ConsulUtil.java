@@ -83,7 +83,7 @@ public class ConsulUtil {
                 .name(serviceName)
                 .port(url.getPort())
                 .address(url.getHost())
-                .serviceWeights(ImmutableServiceWeights.builder().passing((int) url.getWeight()).warning((int) url.getWeight()).build())
+                .serviceWeights(ImmutableServiceWeights.builder().passing(url.getWeight()).warning(url.getWeight()).build())
                 .check(check)
                 .build();
         AgentClient client = consul.agentClient();

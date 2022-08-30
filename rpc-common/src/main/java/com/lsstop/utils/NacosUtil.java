@@ -63,7 +63,7 @@ public class NacosUtil {
         if (instances == null || instances.isEmpty()) {
             return null;
         }
-        return instances.stream().map(instance -> new URL(instance.getServiceName(), instance.getIp(), instance.getPort(), instance.getWeight())).collect(Collectors.toList());
+        return instances.stream().map(instance -> new URL(instance.getServiceName(), instance.getIp(), instance.getPort(), (int) instance.getWeight())).collect(Collectors.toList());
 
     }
 

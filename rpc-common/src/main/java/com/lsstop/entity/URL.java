@@ -32,14 +32,14 @@ public class URL {
     /**
      * 权重
      */
-    private double weight = 1.0D;
+    private int weight = 1;
 
     /**
      * 健康状况
      */
     private boolean healthy = true;
 
-    public URL(String serviceName, String host, int port, double weight) {
+    public URL(String serviceName, String host, int port, int weight) {
         this.serviceName = serviceName;
         this.host = host;
         this.port = port;
