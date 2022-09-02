@@ -1,10 +1,10 @@
 package com.lsstop.proxy;
 
+import com.lsstop.annotation.RpcService;
 import com.lsstop.entity.RpcRequest;
 import com.lsstop.entity.RpcResponse;
 import com.lsstop.enums.RpcErrorEnum;
 import com.lsstop.exception.RpcException;
-import com.lsstop.provider.RegisterNameProvider;
 import com.lsstop.transport.netty.client.NettyClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,9 +45,14 @@ public class RpcClientProxy implements InvocationHandler {
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         LOGGER.info("调用方法: {}#{}", method.getDeclaringClass().getName(), method.getName());
-        //获取服务名称
-        String serviceName = RegisterNameProvider.getServiceName(method.getDeclaringClass().getName());
-        if (serviceName == null) {
+        //通过反射获取服务名称
+        Class<?> aClass = method.getDeclaringClass();
+        if (!aClass.isAnnotationPresent(RpcService.class)) {
+            throw new NullPointerException();
+        }
+        RpcService annotation = aClass.getAnnotation(RpcService.class);
+        String serviceName = annotation.value();
+        if ("".equals(serviceName)) {
             throw new NullPointerException("没有此服务");
         }
         RpcRequest request = RpcRequest.builder()

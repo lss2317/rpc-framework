@@ -18,6 +18,8 @@ public enum RpcErrorEnum {
     SERVICE_TRANSFER_ERROR("服务连接错误"),
     TRANSFER_SERVICE_FAIL("调用服务失败"),
     SERVICE_RESPONSE_FAILURE("服务响应失败"),
+    NOT_FOUND_SERVICE("未发现服务"),
+    SCANNING_SERVICE_ERROR("扫描服务错误"),
     FAILED_TO_CONNECT_TO_SERVICE_REGISTRY("连接注册中心失败"),
     REGISTER_SERVICE_FAILED("注册服务失败");
 

@@ -4,25 +4,20 @@ import com.alibaba.nacos.api.exception.NacosException;
 import com.alibaba.nacos.api.naming.NamingFactory;
 import com.alibaba.nacos.api.naming.NamingService;
 import com.lsstop.entity.URL;
-import com.lsstop.loadbalancer.PollingBalance;
+import com.lsstop.loadbalancer.LoadBalance;
+import com.lsstop.loadbalancer.WeightRandomBalance;
 import com.lsstop.transport.netty.server.NettyServer;
-import com.lsstop.utils.ConsulUtil;
 import com.orbitz.consul.AgentClient;
 import com.orbitz.consul.Consul;
-import com.orbitz.consul.HealthClient;
-import com.orbitz.consul.model.ConsulResponse;
 import com.orbitz.consul.model.agent.ImmutableRegCheck;
 import com.orbitz.consul.model.agent.ImmutableRegistration;
 import com.orbitz.consul.model.agent.Registration;
 import com.orbitz.consul.model.catalog.ImmutableServiceWeights;
-import com.orbitz.consul.model.health.Service;
-import com.orbitz.consul.model.health.ServiceHealth;
 import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 /**
  * @author lss
@@ -84,22 +79,27 @@ public class Demo {
 
     @Test
     public void demo4() throws Exception {
-//        ConsulUtil.addURL("DEMO",new URL("DEMO","127.0.0.1",8081,6));
-        double b = 1.12D;
-        System.out.println(b);
+        StackTraceElement[] stack = new Throwable().getStackTrace();
+        System.out.println(stack[stack.length - 1].getClassName());
     }
 
     @Test
     public void demo5() throws Exception {
-      List<URL> list = new ArrayList<>();
-      list.add(new URL("1","1",1,1));
-      list.add(new URL("2","2",2,2));
-      list.add(new URL("3","3",3,3));
-      list.add(new URL("4","4",4,4));
-        PollingBalance balance = new PollingBalance();
-        for (int i = 0; i < 20; i++) {
-            URL select = balance.select(list);
-            System.out.println(select);
+        List<URL> list = new ArrayList<>();
+        list.add(new URL("1", "1", 1, 1));
+        list.add(new URL("2", "2", 2, 10));
+        list.add(new URL("3", "3", 3, 1));
+        list.add(new URL("4", "4", 4, 1));
+//        PollingBalance balance = new PollingBalance();
+//        for (int i = 0; i < 20; i++) {
+//            URL select = balance.select(list);
+//            System.out.println(select);
+//        }
+        int val = 0x7fffffff;
+        LoadBalance balance = new WeightRandomBalance();
+        for (int i = 0; i < 50; i++) {
+            URL url = balance.select(list);
+            System.out.println(url);
         }
     }
 

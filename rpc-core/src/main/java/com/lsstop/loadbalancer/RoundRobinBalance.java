@@ -5,22 +5,24 @@ import com.lsstop.enums.RpcErrorEnum;
 import com.lsstop.exception.RpcException;
 
 import java.util.List;
-import java.util.Random;
 
 /**
- * 随机
+ * 轮询
  *
  * @author lss
- * @date 2022/08/25
+ * @date 2022/08/28
  */
-public class RandomBalance implements LoadBalance {
+public class RoundRobinBalance implements LoadBalance {
+
+    private int NEXT_INDEX = 0;
 
     @Override
     public URL select(List<URL> list) {
         if (list == null || list.isEmpty()) {
             throw new RpcException(RpcErrorEnum.NOT_FOUND_SERVICE);
         }
-        Random random = new Random();
-        return list.get(random.nextInt(list.size()));
+        NEXT_INDEX = NEXT_INDEX == 0x7fffffff ? 0 : NEXT_INDEX + 1;
+        int index = NEXT_INDEX % list.size();
+        return list.get(index);
     }
 }

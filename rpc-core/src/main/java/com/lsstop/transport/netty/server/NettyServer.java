@@ -1,9 +1,13 @@
 package com.lsstop.transport.netty.server;
 
 
+import com.lsstop.annotation.RpcServiceScan;
+import com.lsstop.enums.RpcErrorEnum;
+import com.lsstop.exception.RpcException;
 import com.lsstop.handler.InvokeMethodHandler;
 import com.lsstop.transport.netty.codec.ServerDecoder;
 import com.lsstop.transport.netty.codec.ServerEncoder;
+import com.lsstop.utils.ReflectUtil;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -20,6 +24,8 @@ public class NettyServer {
 
     public static final Logger LOGGER = LoggerFactory.getLogger(NettyServer.class);
 
+    public NettyServer() {
+    }
 
     public void start(String host, int port) {
         EventLoopGroup bossGroup = new NioEventLoopGroup();
@@ -49,6 +55,21 @@ public class NettyServer {
         } finally {
             bossGroup.shutdownGracefully();
             workerGroup.shutdownGracefully();
+        }
+    }
+
+    /**
+     * 扫描服务
+     */
+    public void scanServices() {
+        String mainClassName = ReflectUtil.getMainClassName();
+        try {
+            Class<?> aClass = Class.forName(mainClassName);
+            RpcServiceScan rpcServiceScan = aClass.getAnnotation(RpcServiceScan.class);
+
+        } catch (Exception e) {
+            LOGGER.error("服务扫描错误：{}", e.getMessage());
+            throw new RpcException(RpcErrorEnum.SCANNING_SERVICE_ERROR);
         }
     }
 }
