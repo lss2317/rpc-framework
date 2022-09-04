@@ -1,5 +1,6 @@
 package com.lsstop.loadbalancer;
 
+import com.lsstop.annotation.RpcService;
 import com.lsstop.entity.URL;
 
 import java.util.List;

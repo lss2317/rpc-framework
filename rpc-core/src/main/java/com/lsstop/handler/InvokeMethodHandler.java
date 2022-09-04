@@ -38,7 +38,7 @@ public class InvokeMethodHandler {
             result = method.invoke(service, request.getArgs());
             LOGGER.info("服务{} 成功调用方法{}", request.getInterfaceName(), request.getMethod());
         } catch (Exception e) {
-            LOGGER.error("方法调用错误");
+            LOGGER.error("方法调用错误:{}", e.getMessage());
             throw new RpcException(ResponseEnum.METHOD_NOT_FOUND);
         }
         return result;

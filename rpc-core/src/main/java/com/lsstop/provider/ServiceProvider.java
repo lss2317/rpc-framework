@@ -17,7 +17,7 @@ public class ServiceProvider {
     /**
      * 储存暴露服务的类
      */
-    private final static ConcurrentHashMap<String, Object> serviceCollect = new ConcurrentHashMap<>();
+    public final static ConcurrentHashMap<String, Object> serviceCollect = new ConcurrentHashMap<>();
 
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ServiceProvider.class);
@@ -27,10 +27,10 @@ public class ServiceProvider {
      * 注册服务
      *
      * @param interfaceName 接口类型
-     * @param o             实现类
+     * @param obj             实现类
      */
-    public static void addServiceRegistration(String interfaceName, Object o) {
-        serviceCollect.put(interfaceName, o);
+    public static void addServiceRegistration(String interfaceName, Object obj) {
+        serviceCollect.put(interfaceName, obj);
     }
 
     /**

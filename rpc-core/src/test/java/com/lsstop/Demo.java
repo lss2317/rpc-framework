@@ -3,6 +3,7 @@ package com.lsstop;
 import com.alibaba.nacos.api.exception.NacosException;
 import com.alibaba.nacos.api.naming.NamingFactory;
 import com.alibaba.nacos.api.naming.NamingService;
+import com.alibaba.nacos.api.naming.pojo.Instance;
 import com.lsstop.entity.URL;
 import com.lsstop.loadbalancer.LoadBalance;
 import com.lsstop.loadbalancer.WeightRandomBalance;
@@ -35,16 +36,24 @@ public class Demo {
     @Test
     public void demo1() throws NacosException {
         NettyServer server = new NettyServer();
-//        NamingService service = NamingFactory.createNamingService("localhost:8848");
-//        service.registerInstance("DEMO", "127.0.0.1", 8080);
+        NamingService service = NamingFactory.createNamingService("localhost:8848");
+        Instance instance = new Instance();
+        instance.setIp("localhost");
+        instance.setPort(8080);
+        instance.setWeight(3);
+        service.registerInstance("DEMO1", instance);
         server.start("127.0.0.1", 8080);
     }
 
     @Test
     public void demo2() throws NacosException {
         NettyServer server = new NettyServer();
-//        NamingService service = NamingFactory.createNamingService("localhost:8848");
-//        service.registerInstance("DEMO", "127.0.0.1", 8081);
+        NamingService service = NamingFactory.createNamingService("localhost:8848");
+        Instance instance = new Instance();
+        instance.setIp("localhost");
+        instance.setPort(8081);
+        instance.setWeight(5);
+        service.registerInstance("DEMO", instance);
         server.start("127.0.0.1", 8081);
     }
 

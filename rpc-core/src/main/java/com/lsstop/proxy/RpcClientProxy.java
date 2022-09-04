@@ -1,6 +1,6 @@
 package com.lsstop.proxy;
 
-import com.lsstop.annotation.RpcService;
+import com.lsstop.annotation.RpcClient;
 import com.lsstop.entity.RpcRequest;
 import com.lsstop.entity.RpcResponse;
 import com.lsstop.enums.RpcErrorEnum;
@@ -47,13 +47,13 @@ public class RpcClientProxy implements InvocationHandler {
         LOGGER.info("调用方法: {}#{}", method.getDeclaringClass().getName(), method.getName());
         //通过反射获取服务名称
         Class<?> aClass = method.getDeclaringClass();
-        if (!aClass.isAnnotationPresent(RpcService.class)) {
-            throw new NullPointerException();
+        if (!aClass.isAnnotationPresent(RpcClient.class)) {
+            throw new RpcException(RpcErrorEnum.NOT_SETUP_SERVICE);
         }
-        RpcService annotation = aClass.getAnnotation(RpcService.class);
+        RpcClient annotation = aClass.getAnnotation(RpcClient.class);
         String serviceName = annotation.value();
         if ("".equals(serviceName)) {
-            throw new NullPointerException("没有此服务");
+            throw new RpcException(RpcErrorEnum.NOT_FOUND_SERVICE);
         }
         RpcRequest request = RpcRequest.builder()
                 .id(UUID.randomUUID().toString().replace("-", ""))

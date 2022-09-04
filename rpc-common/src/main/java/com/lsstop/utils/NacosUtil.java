@@ -40,7 +40,11 @@ public class NacosUtil {
      */
     public static void addURL(String serviceName, URL url) throws NacosException {
         init();
-        service.registerInstance(serviceName, url.getHost(), url.getPort());
+        Instance instance = new Instance();
+        instance.setIp(url.getHost());
+        instance.setPort(url.getPort());
+        instance.setWeight(url.getWeight());
+        service.registerInstance(serviceName, instance);
     }
 
 
