@@ -4,9 +4,6 @@ import com.alibaba.nacos.api.exception.NacosException;
 import com.alibaba.nacos.api.naming.NamingFactory;
 import com.alibaba.nacos.api.naming.NamingService;
 import com.alibaba.nacos.api.naming.pojo.Instance;
-import com.lsstop.entity.URL;
-import com.lsstop.loadbalancer.LoadBalance;
-import com.lsstop.loadbalancer.WeightRandomBalance;
 import com.lsstop.transport.netty.server.NettyServer;
 import com.orbitz.consul.AgentClient;
 import com.orbitz.consul.Consul;
@@ -16,8 +13,6 @@ import com.orbitz.consul.model.agent.Registration;
 import com.orbitz.consul.model.catalog.ImmutableServiceWeights;
 import org.junit.Test;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 /**
@@ -94,22 +89,6 @@ public class Demo {
 
     @Test
     public void demo5() throws Exception {
-        List<URL> list = new ArrayList<>();
-        list.add(new URL("1", "1", 1, 1));
-        list.add(new URL("2", "2", 2, 10));
-        list.add(new URL("3", "3", 3, 1));
-        list.add(new URL("4", "4", 4, 1));
-//        PollingBalance balance = new PollingBalance();
-//        for (int i = 0; i < 20; i++) {
-//            URL select = balance.select(list);
-//            System.out.println(select);
-//        }
-        int val = 0x7fffffff;
-        LoadBalance balance = new WeightRandomBalance();
-        for (int i = 0; i < 50; i++) {
-            URL url = balance.select(list);
-            System.out.println(url);
-        }
     }
 
 }

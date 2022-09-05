@@ -85,13 +85,18 @@ public class NettyServer {
             for (Class<?> clazz : classSet) {
                 //有@RpcService注解的类再获取服务
                 if (clazz.isAnnotationPresent(RpcService.class)) {
-                    //TODO 添加额外属性，解决一个接口有多个实现类的冲突问题
-                    //RpcService rpcService = clazz.getAnnotation(RpcService.class);
+                    //接口便跳过
+                    if (clazz.isInterface()) {
+                        continue;
+                    }
                     Object obj = clazz.newInstance();
-                    //TODO 接口添加注解报错问题
                     Class<?>[] interfaces = clazz.getInterfaces();
-                    for (Class<?> anInterface : interfaces) {
-                        ServiceProvider.addServiceRegistration(anInterface.getName(), obj);
+                    if (interfaces.length == 0) {
+                        ServiceProvider.addServiceRegistration(clazz.getName().substring(clazz.getName().lastIndexOf(".") + 1), obj);
+                    } else {
+                        for (Class<?> anInterface : interfaces) {
+                            ServiceProvider.addServiceRegistration(anInterface.getName().substring(anInterface.getName().lastIndexOf(".") + 1), obj);
+                        }
                     }
                 }
             }

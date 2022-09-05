@@ -1,5 +1,6 @@
 package com.lsstop.provider;
 
+import com.lsstop.exception.RpcException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,7 +18,7 @@ public class ServiceProvider {
     /**
      * 储存暴露服务的类
      */
-    public final static ConcurrentHashMap<String, Object> serviceCollect = new ConcurrentHashMap<>();
+    private final static ConcurrentHashMap<String, Object> serviceFactory = new ConcurrentHashMap<>();
 
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ServiceProvider.class);
@@ -26,11 +27,14 @@ public class ServiceProvider {
     /**
      * 注册服务
      *
-     * @param interfaceName 接口类型
-     * @param obj             实现类
+     * @param interfaceName 接口名称
+     * @param obj           实现类
      */
     public static void addServiceRegistration(String interfaceName, Object obj) {
-        serviceCollect.put(interfaceName, obj);
+        if (serviceFactory.get(interfaceName) != null) {
+            throw new RpcException("服务注册冲突,服务名称" + interfaceName + "已经存在");
+        }
+        serviceFactory.put(interfaceName, obj);
     }
 
     /**
@@ -40,6 +44,6 @@ public class ServiceProvider {
      * @return 服务类型
      */
     public static Object getService(String interfaceName) {
-        return serviceCollect.get(interfaceName);
+        return serviceFactory.get(interfaceName);
     }
 }

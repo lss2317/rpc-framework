@@ -24,7 +24,7 @@ public class NacosUtil {
     /**
      * nacos启动地址
      */
-    private static String serverAddress;
+    private static String serverAddress = "localhost:8848";
 
     private static NamingService service;
 

@@ -55,10 +55,12 @@ public class RpcClientProxy implements InvocationHandler {
         if ("".equals(serviceName)) {
             throw new RpcException(RpcErrorEnum.NOT_FOUND_SERVICE);
         }
+        String interfaceName = method.getDeclaringClass().getName();
+        interfaceName = interfaceName.substring(interfaceName.lastIndexOf(".") + 1);
         RpcRequest request = RpcRequest.builder()
                 .id(UUID.randomUUID().toString().replace("-", ""))
                 .name(serviceName)
-                .interfaceName(method.getDeclaringClass().getName())
+                .interfaceName(interfaceName)
                 .method(method.getName())
                 .args(args)
                 .argsType(method.getParameterTypes()).build();
