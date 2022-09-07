@@ -35,11 +35,11 @@ public class ClientDecoder extends ByteToMessageDecoder {
             LOGGER.error("不能识别的协议：{}", protocol);
             throw new RpcException(RpcErrorEnum.UNKNOWN_PROTOCOL);
         }
-        int type = in.readInt();
-        if (type != RequestType.RESPONSE.getType()) {
-            LOGGER.error("服务响应失败");
-            throw new RpcException(RpcErrorEnum.SERVICE_RESPONSE_FAILURE);
-        }
+//        int type = in.readInt();
+//        if (type != RequestType.RESPONSE.getType()) {
+//            LOGGER.error("服务响应失败");
+//            throw new RpcException(RpcErrorEnum.SERVICE_RESPONSE_FAILURE);
+//        }
         int serializer = in.readInt();
         CommonSerializer commonSerializer = CommonSerializer.getSerializerByCode(serializer);
         if (commonSerializer == null) {

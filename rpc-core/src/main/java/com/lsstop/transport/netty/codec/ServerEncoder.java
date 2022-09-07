@@ -26,7 +26,7 @@ public class ServerEncoder extends MessageToByteEncoder<RpcResponse> {
     @Override
     protected void encode(ChannelHandlerContext ctx, RpcResponse msg, ByteBuf out) throws Exception {
         out.writeInt(TRANSFER_PROTOCOL);
-        out.writeInt(RequestType.RESPONSE.getType());
+//        out.writeInt(RequestType.RESPONSE.getType());
         out.writeInt(msg.getSerializerType());
         CommonSerializer commonSerializer = CommonSerializer.getSerializerByCode(msg.getSerializerType());
         if (commonSerializer == null){
