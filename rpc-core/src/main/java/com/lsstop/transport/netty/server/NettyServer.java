@@ -66,7 +66,7 @@ public class NettyServer {
     /**
      * 扫描服务
      */
-    public void scanServices() {
+    private void scanServices() {
         String mainClassName = ReflectUtil.getMainClassName();
         try {
             Class<?> aClass = Class.forName(mainClassName);

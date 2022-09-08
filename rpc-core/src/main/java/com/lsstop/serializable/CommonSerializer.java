@@ -1,5 +1,8 @@
 package com.lsstop.serializable;
 
+import com.lsstop.enums.RpcErrorEnum;
+import com.lsstop.exception.RpcException;
+
 /**
  * 序列化接口
  *
@@ -10,7 +13,6 @@ public interface CommonSerializer {
 
     Integer FASTJSON_SERIALIZER = 1;
     Integer JACKSON_SERIALIZER = 1 << 1;
-    Integer DEFAULT_SERIALIZER = FASTJSON_SERIALIZER;
 
 
     static CommonSerializer getSerializerByCode(int code) {
@@ -20,7 +22,7 @@ public interface CommonSerializer {
             case 1 << 1:
                 return new JsonSerializer();
             default:
-                return null;
+                throw new RpcException(RpcErrorEnum.SERIALIZER_NOT_FOUND);
         }
     }
 

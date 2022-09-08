@@ -29,7 +29,6 @@ public class ClientEncoder extends MessageToByteEncoder<RpcRequest> {
     @Override
     protected void encode(ChannelHandlerContext ctx, RpcRequest msg, ByteBuf out) throws Exception {
         out.writeInt(TRANSFER_PROTOCOL);
-        out.writeInt(RequestType.REQUEST.getType());
         byte[] serialize = serializer.serialize(msg);
         out.writeInt(serializer.getSerializeCode());
         out.writeInt(serialize.length);

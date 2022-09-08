@@ -36,11 +36,6 @@ public class ServerDecoder extends ByteToMessageDecoder {
             LOGGER.error("不能识别的协议：{}", protocol);
             throw new RpcException(RpcErrorEnum.UNKNOWN_PROTOCOL);
         }
-//        int request = in.readInt();
-//        if (request != RequestType.REQUEST.getType()) {
-//            LOGGER.error("服务请求失败");
-//            throw new RpcException(RpcErrorEnum.SERVICE_RESPONSE_FAILURE);
-//        }
         int serializerType = in.readInt();
         CommonSerializer commonSerializer = CommonSerializer.getSerializerByCode(serializerType);
         if (commonSerializer == null) {
