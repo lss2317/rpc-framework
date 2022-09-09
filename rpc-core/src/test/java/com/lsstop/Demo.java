@@ -4,7 +4,9 @@ import com.alibaba.nacos.api.exception.NacosException;
 import com.alibaba.nacos.api.naming.NamingFactory;
 import com.alibaba.nacos.api.naming.NamingService;
 import com.alibaba.nacos.api.naming.pojo.Instance;
+import com.lsstop.entity.URL;
 import com.lsstop.transport.netty.server.NettyServer;
+import com.lsstop.utils.ConsulUtil;
 import com.orbitz.consul.AgentClient;
 import com.orbitz.consul.Consul;
 import com.orbitz.consul.model.agent.ImmutableRegCheck;
@@ -13,6 +15,7 @@ import com.orbitz.consul.model.agent.Registration;
 import com.orbitz.consul.model.catalog.ImmutableServiceWeights;
 import org.junit.Test;
 
+import java.util.Arrays;
 import java.util.UUID;
 
 /**
@@ -54,41 +57,38 @@ public class Demo {
 
     @Test
     public void demo3() throws Exception {
-        Consul consul = Consul.builder().build();
-        AgentClient agentClient = consul.agentClient();
+//        Consul consul = Consul.builder().build();
+//        AgentClient agentClient = consul.agentClient();
+//        Registration.RegCheck deadManSwitch = ImmutableRegCheck.builder()
+//                .tcp("localhost:8080")
+//                .id(UUID.randomUUID().toString())
+//                .interval("3s")
+//                .deregisterCriticalServiceAfter("5s")
+//                .timeout("5s")
+//                .build();
+//
+//        String serviceId = "1";
+//        Registration service = ImmutableRegistration.builder()
+//                .id(serviceId)
+//                .name("tcp")
+//                .port(8080)
+//                .address("localhost")
+//                .serviceWeights(ImmutableServiceWeights.builder().passing(3).warning(5).build())
+//                .check(deadManSwitch)
+//                .build();
+//        agentClient.register(service);
 
-
-        Registration.RegCheck deadManSwitch = ImmutableRegCheck.builder()
-                .tcp("localhost:8080")
-                .id(UUID.randomUUID().toString())
-                .interval("5s")
-                .deregisterCriticalServiceAfter("5s")
-                .timeout("5s")
-                .build();
-
-        String serviceId = "1";
-        Registration service = ImmutableRegistration.builder()
-                .id(serviceId)
-                .name("tcp")
-                .port(8080)
-                .address("localhost")
-                .serviceWeights(ImmutableServiceWeights.builder().passing(3).warning(5).build())
-                .check(deadManSwitch)
-                .build();
-
-
-        agentClient.register(service);
-        Thread.sleep(3000000);
+        ConsulUtil.addURL("DEMO",new URL("DEMO","127.0.0.1",8080,5));
     }
 
     @Test
     public void demo4() throws Exception {
-        StackTraceElement[] stack = new Throwable().getStackTrace();
-        System.out.println(stack[stack.length - 1].getClassName());
     }
 
     @Test
     public void demo5() throws Exception {
+        String[] split = "localhost:6789".split(":");
+        System.out.println(Arrays.toString(split));
     }
 
 }

@@ -118,11 +118,11 @@ public class RedisUtil {
         }
     }
 
-    public void setRedis(String host, int port) {
+    public static void setRedis(String host, int port) {
         setRedis(host, port, null);
     }
 
-    public void setRedis(String host, int port, String password) {
+    public static void setRedis(String host, int port, String password) {
         DEFAULT_HOST = host;
         DEFAULT_PORT = port;
         PASSWORD = password;

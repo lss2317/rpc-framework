@@ -17,7 +17,7 @@ RPC-Framework是一款多注册中心RPC框架 . 基于Netty实现 , 并且实�
 - rpc-common 通用实体对象，工具类
 - rpc-core rpc核心实现
 
-## 传输协议（SRF协议）
+## 传输协议
 
 调用参数与返回值的传输采用了如下协议以防止粘包：
 

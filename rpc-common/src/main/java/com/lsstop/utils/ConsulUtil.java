@@ -71,15 +71,17 @@ public class ConsulUtil {
      */
     public static void addURL(String serviceName, URL url) {
         init();
+        //id指定，避免一个服务注册多个实例
+        String id = url.getHost() + ":" + url.getPort();
         Registration.RegCheck check = ImmutableRegCheck.builder()
-                .id(UUID.randomUUID().toString().replace("-", ""))
+                .id(id)
                 .tcp(url.getHost() + ":" + url.getPort())
                 .interval(INTERVAL)
                 .timeout(TIMEOUT)
                 .deregisterCriticalServiceAfter(DELETE_TIME)
                 .build();
         Registration registration = ImmutableRegistration.builder()
-                .id(UUID.randomUUID().toString().replace("-", ""))
+                .id(id)
                 .name(serviceName)
                 .port(url.getPort())
                 .address(url.getHost())
@@ -97,6 +99,7 @@ public class ConsulUtil {
      * @return list
      */
     public static List<URL> getURLList(String serviceName) {
+        init();
         HealthClient healthClient = consul.healthClient();
         List<ServiceHealth> response = healthClient.getHealthyServiceInstances(serviceName).getResponse();
         return response.stream().map(res -> {
