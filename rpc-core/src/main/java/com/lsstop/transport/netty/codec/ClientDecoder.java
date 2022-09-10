@@ -1,7 +1,6 @@
 package com.lsstop.transport.netty.codec;
 
 import com.lsstop.entity.RpcResponse;
-import com.lsstop.enums.RequestType;
 import com.lsstop.enums.RpcErrorEnum;
 import com.lsstop.exception.RpcException;
 import com.lsstop.serializable.CommonSerializer;
@@ -37,9 +36,6 @@ public class ClientDecoder extends ByteToMessageDecoder {
         }
         int serializer = in.readInt();
         CommonSerializer commonSerializer = CommonSerializer.getSerializerByCode(serializer);
-        if (commonSerializer == null) {
-            throw new RpcException(RpcErrorEnum.UNKNOWN_SERIALIZER);
-        }
         int length = in.readInt();
         byte[] bytes = new byte[length];
         in.readBytes(bytes);

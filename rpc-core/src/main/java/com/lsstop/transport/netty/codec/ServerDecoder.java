@@ -38,9 +38,6 @@ public class ServerDecoder extends ByteToMessageDecoder {
         }
         int serializerType = in.readInt();
         CommonSerializer commonSerializer = CommonSerializer.getSerializerByCode(serializerType);
-        if (commonSerializer == null) {
-            throw new RpcException(RpcErrorEnum.UNKNOWN_SERIALIZER);
-        }
         int length = in.readInt();
         byte[] bytes = new byte[length];
         in.readBytes(bytes);

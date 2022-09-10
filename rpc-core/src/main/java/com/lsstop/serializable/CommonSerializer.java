@@ -11,16 +11,19 @@ import com.lsstop.exception.RpcException;
  */
 public interface CommonSerializer {
 
-    Integer FASTJSON_SERIALIZER = 1;
-    Integer JACKSON_SERIALIZER = 1 << 1;
+    int FASTJSON_SERIALIZER = 1;
+    int JACKSON_SERIALIZER = 1 << 1;
+    int KRYO_SERIALIZER = 1 << 2;
 
 
     static CommonSerializer getSerializerByCode(int code) {
         switch (code) {
-            case 1:
+            case FASTJSON_SERIALIZER:
                 return new FastJsonSerializer();
-            case 1 << 1:
+            case JACKSON_SERIALIZER:
                 return new JsonSerializer();
+            case KRYO_SERIALIZER:
+                return new KryoSerializer();
             default:
                 throw new RpcException(RpcErrorEnum.SERIALIZER_NOT_FOUND);
         }

@@ -36,7 +36,7 @@ RPC-Framework是一款多注册中心RPC框架 . 基于Netty实现 , 并且实�
 | Magic Number    | 魔数，识别是否是自己的协议包，0xCAFEBABE                     |
 | Serializer Type | 序列化器类型，标明这个包的数据的序列化方式                   |
 | Data Length     | 数据字节的长度                                               |
-| Data Bytes      | 传输的对象，通常是一个`RpcRequest`或`RpcClient`对象，取决于`Package Type`字段，对象的序列化方式取决于`Serializer Type`字段。 |
+| Data Bytes      | 传输的对象，通常是一个`RpcRequest`或`RpcResponse`对象，消费的传输的是`RpcRequest`,服务提供方传输的是`RpcResponse`,序列化方式取决于Serializer Type |
 
 ## 基本使用
 

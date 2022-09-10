@@ -3,6 +3,7 @@ package com.lsstop.proxy;
 import com.lsstop.annotation.RpcClient;
 import com.lsstop.entity.RpcRequest;
 import com.lsstop.entity.RpcResponse;
+import com.lsstop.enums.ResponseEnum;
 import com.lsstop.enums.RpcErrorEnum;
 import com.lsstop.exception.RpcException;
 import com.lsstop.transport.netty.client.NettyClient;
@@ -69,6 +70,9 @@ public class RpcClientProxy implements InvocationHandler {
             //远程调用请求
             CompletableFuture<RpcResponse> future = client.remoteService(request);
             response = future.get();
+            if (response.getStatusCode() == ResponseEnum.FAIL.getCode()) {
+                throw new RpcException(RpcErrorEnum.TRANSFER_SERVICE_FAIL);
+            }
         } catch (Exception e) {
             LOGGER.error("方法调用请求发送失败:{}", e.getMessage());
             throw new RpcException(RpcErrorEnum.TRANSFER_SERVICE_FAIL);

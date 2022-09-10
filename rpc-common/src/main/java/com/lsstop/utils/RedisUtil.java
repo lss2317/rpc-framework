@@ -80,6 +80,7 @@ public class RedisUtil {
             jedis.set(serviceName, json);
             return;
         }
+        //TODO 解决重复注册服务
         List<URL> list = JSONArray.parseArray(urlList, URL.class);
         list.add(url);
         String json = JSONArray.toJSONString(list);

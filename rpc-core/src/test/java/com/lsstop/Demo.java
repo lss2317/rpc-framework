@@ -7,16 +7,9 @@ import com.alibaba.nacos.api.naming.pojo.Instance;
 import com.lsstop.entity.URL;
 import com.lsstop.transport.netty.server.NettyServer;
 import com.lsstop.utils.ConsulUtil;
-import com.orbitz.consul.AgentClient;
-import com.orbitz.consul.Consul;
-import com.orbitz.consul.model.agent.ImmutableRegCheck;
-import com.orbitz.consul.model.agent.ImmutableRegistration;
-import com.orbitz.consul.model.agent.Registration;
-import com.orbitz.consul.model.catalog.ImmutableServiceWeights;
 import org.junit.Test;
 
 import java.util.Arrays;
-import java.util.UUID;
 
 /**
  * @author lss
