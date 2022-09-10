@@ -4,18 +4,27 @@ RPC-Framework是一款多注册中心RPC框架 . 基于Netty实现 , 并且实�
 
 ## 架构
 
-![image-20220907165158615](https://typora-1307541812.cos.ap-nanjing.myqcloud.com/image-20220907165158615.png)
+![image-20220910222106500](https://typora-1307541812.cos.ap-nanjing.myqcloud.com/image-20220910222106500.png)
 
 消费端通过接口，调用动态代理生成的对象，通过Netty异步调用，服务端则调用消费端调用的服务，返回执行结果。
 
 ## 特性
 
-- 
+- 支持nacos、consul、redis三种服务注册中心方案
+- 支持Spring自动注册和发现服务
+- 实现了kryo、fastjson、jackson三种序列化方式
+- 接口模块耦合度低，序列化器、负载均衡算法可配置
+- 服务提供侧自动注册服务
+- 服务Channel通道可复用，提高服务性能
+
+### 已经提供SpringBoot支持
+
+[spring-boot-starter-rpc项目地址](https://github.com/lss2317/spring-boot-starter-rpc)
 
 ## 模块说明
 
-- rpc-common 通用实体对象，工具类
-- rpc-core rpc核心实现
+- `rpc-common` 通用实体对象，工具类
+- `rpc-core` rpc核心实现
 
 ## 传输协议
 

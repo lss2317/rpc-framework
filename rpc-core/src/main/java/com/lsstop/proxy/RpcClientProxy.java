@@ -45,7 +45,7 @@ public class RpcClientProxy implements InvocationHandler {
 
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-        LOGGER.info("调用方法: {}#{}", method.getDeclaringClass().getName(), method.getName());
+        LOGGER.info("调用方法:{}#{}", method.getDeclaringClass().getName(), method.getName());
         //通过反射获取服务名称
         Class<?> aClass = method.getDeclaringClass();
         if (!aClass.isAnnotationPresent(RpcClient.class)) {
