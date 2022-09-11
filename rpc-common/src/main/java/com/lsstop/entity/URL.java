@@ -2,6 +2,8 @@ package com.lsstop.entity;
 
 import lombok.*;
 
+import java.util.Objects;
+
 /**
  * @author lss
  * @date 2022/08/17
@@ -11,7 +13,6 @@ import lombok.*;
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode
 public class URL {
 
     /**
@@ -44,5 +45,18 @@ public class URL {
         this.host = host;
         this.port = port;
         this.weight = weight;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        URL url = (URL) o;
+        return port == url.port && weight == url.weight && serviceName.equals(url.serviceName) && host.equals(url.host);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(serviceName, host, port, weight);
     }
 }

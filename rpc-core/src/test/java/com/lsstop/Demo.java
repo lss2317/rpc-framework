@@ -80,8 +80,9 @@ public class Demo {
 
     @Test
     public void demo5() throws Exception {
-        String[] split = "localhost:6789".split(":");
-        System.out.println(Arrays.toString(split));
+        URL url1 = new URL("DEMO", "127.0.0.1", 9000, 9);
+        URL url2 = new URL("DEMO", "127.0.0.1", 9000, 9,false);
+        System.out.println(url1.equals(url2));
     }
 
 }

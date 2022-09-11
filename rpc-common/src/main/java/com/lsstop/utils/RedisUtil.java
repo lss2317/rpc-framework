@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import redis.clients.jedis.Jedis;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -74,14 +75,15 @@ public class RedisUtil {
         String urlList = jedis.get(serviceName);
         if (urlList == null) {
             List<URL> list = new ArrayList<>();
-            //TODO 剔除不健康服务
             list.add(url);
             String json = JSONArray.toJSONString(list);
             jedis.set(serviceName, json);
             return;
         }
-        //TODO 解决重复注册服务
         List<URL> list = JSONArray.parseArray(urlList, URL.class);
+        //删除不健康服务
+        list.removeIf(next -> !next.isHealthy());
+        list.removeIf(next -> next.equals(url));
         list.add(url);
         String json = JSONArray.toJSONString(list);
         jedis.set(serviceName, json);

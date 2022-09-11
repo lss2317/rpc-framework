@@ -120,7 +120,7 @@ public class NettyClient {
         //向注册中心获取服务提供方URL
         URL url = registryCenter.getURL(request.getName());
         if (url == null) {
-            throw new NullPointerException("无此服务");
+            throw new RpcException(RpcErrorEnum.NOT_FOUND_SERVICE);
         }
         Channel channel = getChannel(url, serializer);
         if (channel == null || !channel.isActive()) {
@@ -157,10 +157,10 @@ public class NettyClient {
         CompletableFuture<Channel> completableFuture = new CompletableFuture<>();
         bootstrap.connect(inetSocketAddress).addListener((ChannelFutureListener) future -> {
             if (future.isSuccess()) {
-                LOGGER.info("客户端连接成功!");
+                LOGGER.info("客户端连接成功：{}:{}", inetSocketAddress.getAddress(), inetSocketAddress.getPort());
                 completableFuture.complete(future.channel());
             } else {
-                completableFuture.completeExceptionally(new RpcException(""));
+                completableFuture.completeExceptionally(new RpcException(RpcErrorEnum.CLIENT_CONNECT_SERVER_FAILURE));
             }
         });
         return completableFuture.get();
