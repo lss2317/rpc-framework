@@ -42,6 +42,9 @@ public class ConsulRegistry implements RegistryCenter {
     public URL getURL(String serviceName) {
         try {
             List<URL> list = ConsulUtil.getURLList(serviceName);
+            if (list == null || list.isEmpty()) {
+                return null;
+            }
             return balance.select(list);
         } catch (Exception e) {
             LOGGER.error("服务调用报错：{}", e.getMessage());

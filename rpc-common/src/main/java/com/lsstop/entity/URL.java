@@ -52,7 +52,7 @@ public class URL {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         URL url = (URL) o;
-        return port == url.port && weight == url.weight && serviceName.equals(url.serviceName) && host.equals(url.host);
+        return port == url.port && serviceName.equals(url.serviceName) && host.equals(url.host);
     }
 
     @Override

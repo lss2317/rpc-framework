@@ -1,6 +1,6 @@
 # Rpc-Framework
 
-RPC-Framework是一款多注册中心RPC框架 . 基于Netty实现 , 并且实现了多种序列化与负载均衡算法.
+RPC-Framework是一款多注册中心RPC框架 . 基于Netty实现 , 并且实现了多种序列化方式与负载均衡算法.
 
 ## 架构
 
@@ -14,8 +14,9 @@ RPC-Framework是一款多注册中心RPC框架 . 基于Netty实现 , 并且实�
 - 支持Spring自动注册和发现服务
 - 实现了kryo、fastjson、jackson三种序列化方式
 - 接口模块耦合度低，序列化器、负载均衡算法可配置
-- 服务提供侧自动注册服务
-- 服务Channel通道可复用，提高服务性能
+- 服务提供方自动注册服务
+- 自定义通信协议，防止粘包
+- 使用Netty通信，并且服务Channel通道可复用，提高服务性能
 
 ### 已经提供SpringBoot支持
 
