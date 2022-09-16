@@ -4,7 +4,7 @@ RPC-Framework是一款多注册中心RPC框架 . 基于Netty实现 , 并且实�
 
 ## 架构
 
-![image-20220910222106500](https://typora-1307541812.cos.ap-nanjing.myqcloud.com/image-20220910222106500.png)
+![image-20220910222106500](./img/8e2839fa6a531cd9b5d1083c973f998.jpg)
 
 消费端通过接口，调用动态代理生成的对象，通过Netty异步调用，服务端则调用消费端调用的服务，返回执行结果。
 
