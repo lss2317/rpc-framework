@@ -16,6 +16,7 @@ public enum RpcErrorEnum {
     UNKNOWN_SERIALIZER("不识别的(反)序列化器"),
     UNKNOWN_PROTOCOL("不识别的协议包"),
     SERIALIZER_NOT_FOUND("未设置序列化器"),
+    REGISTERED_NOT_FOUND("未设置注册中心"),
     SERVICE_TRANSFER_ERROR("服务连接错误"),
     TRANSFER_SERVICE_FAIL("调用服务失败"),
     SERVICE_RESPONSE_FAILURE("服务响应失败"),

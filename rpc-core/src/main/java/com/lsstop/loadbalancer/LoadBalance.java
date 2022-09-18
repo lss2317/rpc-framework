@@ -33,8 +33,10 @@ public interface LoadBalance {
                 return new WeightRandomBalance();
             case "weightRoundRobin":
                 return new WeightRoundRobinBalance();
+            case "hash":
+                return new HashBalance();
             default:
-                throw new RpcException(RpcErrorEnum.SERIALIZER_NOT_FOUND);
+                throw new RpcException(RpcErrorEnum.REGISTERED_NOT_FOUND);
         }
     }
 }

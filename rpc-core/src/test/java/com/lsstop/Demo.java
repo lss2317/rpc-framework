@@ -5,11 +5,14 @@ import com.alibaba.nacos.api.naming.NamingFactory;
 import com.alibaba.nacos.api.naming.NamingService;
 import com.alibaba.nacos.api.naming.pojo.Instance;
 import com.lsstop.entity.URL;
+import com.lsstop.loadbalancer.HashBalance;
 import com.lsstop.transport.netty.server.NettyServer;
 import com.lsstop.utils.ConsulUtil;
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * @author lss
@@ -50,28 +53,18 @@ public class Demo {
 
     @Test
     public void demo3() throws Exception {
-//        Consul consul = Consul.builder().build();
-//        AgentClient agentClient = consul.agentClient();
-//        Registration.RegCheck deadManSwitch = ImmutableRegCheck.builder()
-//                .tcp("localhost:8080")
-//                .id(UUID.randomUUID().toString())
-//                .interval("3s")
-//                .deregisterCriticalServiceAfter("5s")
-//                .timeout("5s")
-//                .build();
-//
-//        String serviceId = "1";
-//        Registration service = ImmutableRegistration.builder()
-//                .id(serviceId)
-//                .name("tcp")
-//                .port(8080)
-//                .address("localhost")
-//                .serviceWeights(ImmutableServiceWeights.builder().passing(3).warning(5).build())
-//                .check(deadManSwitch)
-//                .build();
-//        agentClient.register(service);
-
-        ConsulUtil.addURL("DEMO",new URL("DEMO","127.0.0.1",8080,5));
+        List<URL> list = new ArrayList<>();
+        list.add(new URL("DEMO", "127.0.0.1", 9000, 9));
+        list.add(new URL("DEMO", "127.0.0.1", 9001, 9));
+        list.add(new URL("DEMO", "127.0.0.1", 9002, 9));
+        list.add(new URL("DEMO", "127.0.0.1", 9003, 9));
+        list.add(new URL("DEMO", "127.0.0.1", 9004, 9));
+        HashBalance balance = new HashBalance();
+        System.out.println(new HashBalance().select(list));
+        System.out.println(balance.select(list));
+        System.out.println(balance.select(list));
+        System.out.println(balance.select(list));
+        System.out.println(balance.select(list));
     }
 
     @Test
