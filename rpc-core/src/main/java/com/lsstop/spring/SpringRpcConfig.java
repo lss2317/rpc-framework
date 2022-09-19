@@ -2,11 +2,10 @@ package com.lsstop.spring;
 
 import com.lsstop.proxy.RpcClientProxy;
 import com.lsstop.transport.netty.client.NettyClient;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
-
-import javax.annotation.Resource;
 
 /**
  * spring配置
@@ -18,10 +17,10 @@ import javax.annotation.Resource;
 @Configuration
 public class SpringRpcConfig {
 
-    @Resource
+    @Autowired(required = false)
     NettyClient client;
 
-    @Bean
+    @Bean("SpringBeanPostProcessor")
     public SpringBeanPostProcessor springBeanPostProcessor() {
         return new SpringBeanPostProcessor(rpcClientProxy());
     }
